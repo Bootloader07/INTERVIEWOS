@@ -253,16 +253,3 @@ FEEDBACK:
 - **Frontend**: Plain HTML + Vanilla CSS + Vanilla JS
 
 ---
-
-## AI Usage Log
-
-| Step | Tool / Prompt | What was accepted / edited |
-|------|--------------|---------------------------|
-| Architecture design | Claude Sonnet 4.6 (Antigravity) | Full architecture derived from `architecture.md` and `coding_rules.md` spec |
-| `interviewPlanner.js` | Claude Sonnet 4.6 | Pure function with 3-pass prioritisation; reviewed and verified output manually |
-| `llmOrchestrator.js` | Claude Sonnet 4.6 | Confidence tag parser and retry logic; tested with live Groq calls |
-| `feedbackGenerator.js` | Claude Sonnet 4.6 | JSON safety pattern (strip fences → parse → retry → default) |
-| `routes/interview.js` | Claude Sonnet 4.6 | Route handler with single-endpoint multi-phase routing |
-| Chat UI `index.html` | Claude Sonnet 4.6 | Premium dark-mode UI; visual design reviewed manually |
-| System prompts | Human-authored (project spec) | Used exactly as specified, injected with candidate data |
-| End-to-end testing | Live curl mock interview | Verified 8 questions / 4+ days / feedback JSON |
