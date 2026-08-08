@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/loading.css" />
 
   <style>
     /* ── Design Tokens & CSS Variables ─────────────────────────────────────── */
@@ -1409,9 +1410,193 @@
         color: #000 !important;
       }
     }
+    /* ── Loader mask — bg must match loading screen so 3D clip works ────── */
+    .loader:before, .loader:after {
+      background: #080810;
+    }
+
+    [data-theme="light"] .loader:before,
+    [data-theme="light"] .loader:after {
+      background: #f4f6fb;
+    }
+
+    /* ── Loading Screen wrapper ────────────────────────────────────── */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #080810;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      transition: opacity 0.5s ease;
+    }
+
+    [data-theme="light"] #loading-screen {
+      background: #f4f6fb;
+    }
+
+    .loading-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #60a5fa;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: labelFadeIn 0.4s ease 0.5s forwards;
+    }
+
+    [data-theme="light"] .loading-label {
+      color: #2563eb;
+    }
+
+    @keyframes labelFadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Landing screen fades in after loader exits */
+    #screen-landing {
+      transition: opacity 0.4s ease;
+    }
+
+    /* ── LIGHT MODE: Landing page overrides ──────────────────────────── */
+    [data-theme="light"] #screen-landing {
+      background: #f4f6fb;
+    }
+
+    [data-theme="light"] #screen-landing::before {
+      background-image:
+        linear-gradient(rgba(30, 64, 175, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 64, 175, 0.08) 1px, transparent 1px);
+    }
+
+    [data-theme="light"] .landing-blob {
+      background: radial-gradient(ellipse at 38% 38%,
+        rgba(191, 219, 254, 0.40) 0%,
+        rgba(199, 210, 254, 0.28) 45%,
+        transparent 75%);
+    }
+
+    [data-theme="light"] .landing-headline {
+      color: #0f172a;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+    [data-theme="light"] .headline-em {
+      color: #2563eb;
+    }
+
+    [data-theme="light"] .landing-tagline {
+      color: #475569;
+    }
+
+    [data-theme="light"] .announce-pill {
+      background: #ffffff;
+      border-color: #2563eb;
+      color: #0f172a;
+    }
+
+    [data-theme="light"] .announce-dot {
+      background: #2563eb;
+      box-shadow: 0 0 7px rgba(37, 99, 235, 0.50);
+    }
+
+    [data-theme="light"] .blinking-cursor {
+      background-color: #2563eb;
+    }
+
+    [data-theme="light"] .landing-cta-card {
+      background: rgba(255, 255, 255, 0.70);
+      border-color: rgba(30, 64, 175, 0.20);
+    }
+
+    [data-theme="light"] .cta-card-label {
+      color: #64748b;
+    }
+
+    [data-theme="light"] #landing-start-btn {
+      background: #0f172a;
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.18);
+    }
+
+    [data-theme="light"] #landing-start-btn:hover {
+      background: #1e293b;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.28);
+    }
+
+    [data-theme="light"] .stat-pill-bar {
+      background: rgba(255, 255, 255, 0.60);
+      border-color: rgba(30, 64, 175, 0.12);
+    }
+
+    [data-theme="light"] .stat-pill-item strong {
+      color: #0f172a;
+    }
+
+    [data-theme="light"] .stat-divider {
+      color: rgba(30, 64, 175, 0.25);
+    }
+
+    [data-theme="light"] .how-it-works-strip {
+      background: rgba(244, 246, 251, 0.82);
+      border-top-color: rgba(30, 64, 175, 0.10);
+    }
+
+    [data-theme="light"] .how-step-num {
+      color: #2563eb;
+    }
+
+    [data-theme="light"] .how-step-text {
+      color: #334155;
+    }
+
+    [data-theme="light"] .how-step-divider {
+      background: rgba(30, 64, 175, 0.15);
+    }
+
+    /* Light mode navbar */
+    [data-theme="light"] .header-brand {
+      color: #0f172a;
+    }
+
+    [data-theme="light"] .brand-badge {
+      color: #2563eb;
+      background: rgba(37, 99, 235, 0.08);
+      border-color: rgba(37, 99, 235, 0.20);
+    }
+
+    [data-theme="light"] .btn-signin {
+      color: #0f172a;
+      border-color: rgba(15, 23, 42, 0.20);
+    }
+
+    [data-theme="light"] .btn-icon {
+      color: #0f172a;
+    }
+
   </style>
 </head>
 <body>
+
+  <!-- ── Loading Screen (first-visit only) ──────────────────────────────── -->
+  <div id="loading-screen">
+    <!-- From Uiverse.io by Admin12121 — verbatim from loading.html -->
+    <div class="loader">
+      <div class="box box0"><div></div></div>
+      <div class="box box1"><div></div></div>
+      <div class="box box2"><div></div></div>
+      <div class="box box3"><div></div></div>
+      <div class="box box4"><div></div></div>
+      <div class="box box5"><div></div></div>
+      <div class="box box6"><div></div></div>
+      <div class="box box7"><div></div></div>
+      <div class="ground"><div></div></div>
+    </div>
+    <span class="loading-label">InterviewOS</span>
+  </div>
 
   <!-- ── App Header ────────────────────────────────────────────────────────── -->
   <header class="app-header">
@@ -2362,9 +2547,33 @@
 
     // ── Landing background is pure CSS — blob + grid texture, no canvas ──
 
-    // ── Application Kickoff ─────────────────────────────────────────────────
+    // ── Loading Screen ────────────────────────────────────────────────────
+    let hasLoaded = false;
+
+    function runLoader() {
+      const loader  = document.getElementById('loading-screen');
+      const landing = document.getElementById('screen-landing');
+      if (!loader || !landing) return;
+
+      // Hide landing behind the fixed loader while animation plays
+      landing.style.opacity = '0';
+
+      // After 3 s (matches loader --duration: 3s) start fade-out
+      setTimeout(() => {
+        loader.style.opacity = '0';
+        // After 0.5 s fade completes: remove loader, reveal landing
+        setTimeout(() => {
+          loader.style.display = 'none';
+          landing.style.opacity = '1';
+          hasLoaded = true;
+        }, 500);
+      }, 3000);
+    }
+
+    // ── Application Kickoff ─────────────────────────────────────────
     window.addEventListener('DOMContentLoaded', () => {
       initAppData();
+      runLoader(); // first-visit only; hasLoaded prevents re-runs via navigateTo
     });
   </script>
 </body>
