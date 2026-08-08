@@ -30,17 +30,21 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Candidates list (helper for UI dropdown)
+// Candidates list — returns full candidate objects (member + missions + signals)
+// Extended for InterviewOS lobby UI (mission dots, focus areas, signals display)
 app.get('/api/candidates', (req, res) => {
   const candidatesData = require('../data/candidates.json');
-  const list = candidatesData.candidates.map(c => ({
-    id: c.member.id,
-    name: c.member.name,
-    role: c.member.jobRole,
-    experience: c.member.yearsExperience,
-    missionsCompleted: c.signals.missionsCompleted,
-  }));
-  res.json(list);
+  res.json(candidatesData.candidates);
+});
+
+// Curriculum summary — used by Landing stat pills and radar axis labels
+app.get('/api/curriculum', (req, res) => {
+  const curriculum = require('../data/curriculum.json');
+  res.json({
+    cohort: curriculum.cohort,
+    totalDays: curriculum.days.length,
+    modules: curriculum.modules,
+  });
 });
 
 // ─── 404 catch-all ────────────────────────────────────────────────────────────

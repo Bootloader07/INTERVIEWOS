@@ -129,7 +129,10 @@ function isInterviewComplete(session) {
   // 2. Hard cap — minimums not required, interview must end
   if (question_count >= HARD_CAP) return true;
 
-  // 3. Minimums met and not mid-follow-up — close cleanly after the current exchange
+  // 3. Plan exhausted
+  if (session.plan && session.plan_index >= session.plan.length) return true;
+
+  // 4. Minimums met and not mid-follow-up — close cleanly after the current exchange
   const minimumsMet = question_count >= 8 && distinct_days_covered.length >= 4;
   const notMidFollowUp = follow_up_count === 0; // 0 means we just opened a fresh topic
   if (minimumsMet && notMidFollowUp) return true;

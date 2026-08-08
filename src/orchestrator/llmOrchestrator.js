@@ -172,12 +172,7 @@ Output format: CONFIDENCE: high|medium|low on line 1, then the question on line 
     attempt++;
   }
 
-  // Scripted fallback that still references the claim
-  const fallback = extractedClaim
-    ? `You mentioned that ${extractedClaim.replace(/^The candidate /i, 'you ')} — can you walk me through why you made that specific choice over the alternatives?`
-    : `Can you elaborate on that decision — what made you confident it was the right approach?`;
-
-  return { confidence: 'medium', question: fallback };
+  throw new Error(`Failed to generate follow-up question for claim: "${extractedClaim}"`);
 }
 
 // ─── Main question entry point ────────────────────────────────────────────────
@@ -219,10 +214,15 @@ async function getNextQuestion(systemPrompt, transcript, currentTopic, follow_up
   }
 
   // ── Standard path: first question on a topic (or fallback) ──────────────
+  let standardPrompt = systemPrompt;
+  if (follow_up_count > 0) {
+    standardPrompt += `\n\n--- FOLLOW-UP INSTRUCTION ---\nYou have already asked about this topic. Ask a NEW, DIFFERENT follow-up question based on the candidate's previous answer. Do NOT repeat your previous questions.`;
+  }
+
   let attempt = 0;
   while (attempt < 2) {
     try {
-      const raw = await callGroq(systemPrompt, messages);
+      const raw = await callGroq(standardPrompt, messages);
       const parsed = parseInterviewResponse(raw);
       if (parsed.question && parsed.question.length > 5) return parsed;
     } catch (err) {
