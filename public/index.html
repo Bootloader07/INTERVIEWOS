@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Interview Agent — Technical Interview</title>
+  <meta name="description" content="Adaptive AI-powered technical interview platform for the 31-day AI Engineering cohort." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Design Tokens ─────────────────────────────────────────── */
+    :root {
+      --bg-deep:       #0a0d14;
+      --bg-card:       #111622;
+      --bg-input:      #161c2e;
+      --bg-hover:      #1e2640;
+      --border:        #242d45;
+      --border-glow:   #3b5bdb;
+      --accent-blue:   #4c6ef5;
+      --accent-violet: #7950f2;
+      --accent-cyan:   #22d3ee;
+      --accent-green:  #10b981;
+      --accent-amber:  #f59e0b;
+      --accent-red:    #ef4444;
+      --text-primary:  #e8ecf4;
+      --text-secondary:#8892aa;
+      --text-muted:    #4a5568;
+      --radius-sm:     6px;
+      --radius-md:     12px;
+      --radius-lg:     18px;
+      --radius-xl:     24px;
+      --shadow-card:   0 4px 24px rgba(0,0,0,0.4);
+      --shadow-glow:   0 0 20px rgba(76,110,245,0.15);
+    }
+
+    /* ── Reset & Base ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Layout ────────────────────────────────────────────────── */
+    .app {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      grid-template-rows: 60px 1fr;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Header ────────────────────────────────────────────────── */
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: rgba(17,22,34,0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .header-brand .icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 6px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.idle { background: var(--text-muted); box-shadow: none; animation: none; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* ── Sidebar ───────────────────────────────────────────────── */
+    .sidebar {
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      padding: 20px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sidebar-section-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 8px;
+    }
+
+    /* Candidate Select */
+    .select-wrapper {
+      position: relative;
+    }
+
+    select#candidate-select {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      padding: 10px 12px;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      transition: border-color 0.2s;
+    }
+
+    select#candidate-select:focus, select#candidate-select:hover {
+      border-color: var(--border-glow);
+    }
+
+    .select-arrow {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: 11px;
+    }
+
+    /* Start Button */
+    #start-btn {
+      width: 100%;
+      padding: 11px 16px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+      border: none;
+      border-radius: var(--radius-md);
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(76,110,245,0.3);
+    }
+
+    #start-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(76,110,245,0.45);
+    }
+
+    #start-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Progress Panel */
+    .progress-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .progress-stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .progress-value {
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-cyan);
+    }
+
+    .progress-bar-wrap {
+      height: 4px;
+      background: var(--bg-input);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
+    /* Days covered tags */
+    .days-covered {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 4px;
+    }
+
+    .day-tag {
+      padding: 2px 8px;
+      background: rgba(76,110,245,0.15);
+      border: 1px solid rgba(76,110,245,0.3);
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-blue);
+    }
+
+    /* Candidate info card */
+    .candidate-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: none;
+    }
+
+    .candidate-card.visible { display: block; }
+
+    .candidate-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .candidate-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── Chat Area ─────────────────────────────────────────────── */
+    .chat-area {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg-deep);
+    }
+
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    .messages-container::-webkit-scrollbar { width: 5px; }
+    .messages-container::-webkit-scrollbar-track { background: transparent; }
+    .messages-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── Messages ──────────────────────────────────────────────── */
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 780px;
+      animation: fadeSlideIn 0.3s ease forwards;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .message-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .message.assistant .message-avatar {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+      color: white;
+    }
+
+    .message.user .message-avatar {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+      color: #0a0d14;
+    }
+
+    .message-bubble {
+      padding: 14px 18px;
+      border-radius: var(--radius-lg);
+      max-width: 680px;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .message.assistant .message-bubble {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top-left-radius: 4px;
+      color: var(--text-primary);
+    }
+
+    .message.user .message-bubble {
+      background: linear-gradient(135deg, rgba(76,110,245,0.2), rgba(121,80,242,0.2));
+      border: 1px solid rgba(76,110,245,0.25);
+      border-top-right-radius: 4px;
+      color: var(--text-primary);
+    }
+
+    .message-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    .message.user .message-meta { text-align: right; }
+
+    /* ── Typing Indicator ──────────────────────────────────────── */
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px 8px;
+    }
+
+    .typing-indicator.visible { display: flex; }
+
+    .typing-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      border-top-left-radius: 4px;
+      padding: 14px 18px;
+    }
+
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      animation: typingBounce 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* ── Input Area ────────────────────────────────────────────── */
+    .input-area {
+      padding: 16px 24px;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    #message-input {
+      flex: 1;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 12px 16px;
+      resize: none;
+      min-height: 48px;
+      max-height: 140px;
+      outline: none;
+      transition: border-color 0.2s;
+      line-height: 1.5;
+    }
+
+    #message-input::placeholder { color: var(--text-muted); }
+
+    #message-input:focus {
+      border-color: var(--border-glow);
+      box-shadow: 0 0 0 3px rgba(76,110,245,0.1);
+    }
+
+    #send-btn {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+      border: none;
+      border-radius: var(--radius-md);
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(76,110,245,0.3);
+    }
+
+    #send-btn:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(76,110,245,0.45);
+    }
+
+    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .input-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* ── Welcome Screen ────────────────────────────────────────── */
+    .welcome-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .welcome-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+      border-radius: var(--radius-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 8px 32px rgba(76,110,245,0.35);
+    }
+
+    .welcome-title {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .welcome-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 380px;
+      line-height: 1.6;
+    }
+
+    .welcome-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 340px;
+      margin-top: 8px;
+    }
+
+    .welcome-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: left;
+    }
+
+    .welcome-step .step-num {
+      width: 22px;
+      height: 22px;
+      background: rgba(76,110,245,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      flex-shrink: 0;
+    }
+
+    /* ── Feedback Card ─────────────────────────────────────────── */
+    .feedback-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 680px;
+    }
+
+    .feedback-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feedback-badge {
+      padding: 3px 10px;
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.3);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-green);
+    }
+
+    .feedback-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .feedback-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .feedback-summary {
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .feedback-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .feedback-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text-primary);
+    }
+
+    .feedback-item .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .feedback-item.strength .dot { background: var(--accent-green); }
+    .feedback-item.gap .dot { background: var(--accent-amber); }
+    .feedback-item.next .dot { background: var(--accent-cyan); }
+
+    /* ── Empty state ───────────────────────────────────────────── */
+    .messages-empty {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Notification Toast ────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--text-primary);
+      box-shadow: var(--shadow-card);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { border-color: rgba(239,68,68,0.4); }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── Header ─────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="icon">🎤</div>
+      AI Interview Agent
+    </div>
+    <div class="header-status" id="header-status">
+      <div class="status-dot idle" id="status-dot"></div>
+      <span id="status-text">Ready to start</span>
+    </div>
+  </header>
+
+  <!-- ── Sidebar ────────────────────────────────────── -->
+  <aside class="sidebar">
+
+    <!-- Candidate Selector -->
+    <div>
+      <div class="sidebar-section-title">Select Candidate</div>
+      <div class="select-wrapper">
+        <select id="candidate-select">
+          <option value="">Loading candidates…</option>
+        </select>
+        <span class="select-arrow">▾</span>
+      </div>
+    </div>
+
+    <!-- Candidate Info Card -->
+    <div class="candidate-card" id="candidate-card">
+      <div class="candidate-name" id="cand-name">—</div>
+      <div class="candidate-meta" id="cand-meta">—</div>
+    </div>
+
+    <!-- Start Button -->
+    <button id="start-btn" disabled>Start Interview</button>
+
+    <!-- Progress Panel -->
+    <div>
+      <div class="sidebar-section-title">Interview Progress</div>
+      <div class="progress-section">
+        <div class="progress-stat">
+          <span class="progress-label">Questions asked</span>
+          <span class="progress-value" id="stat-questions">0 / 8+</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="bar-questions" style="width:0%"></div>
+        </div>
+        <div class="progress-stat">
+          <span class="progress-label">Days covered</span>
+          <span class="progress-value" id="stat-days">0 / 4+</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="bar-days" style="width:0%"></div>
+        </div>
+        <div class="sidebar-section-title" style="margin-top:8px">Days covered</div>
+        <div class="days-covered" id="days-tags"></div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── Chat Area ──────────────────────────────────── -->
+  <main class="chat-area">
+
+    <div class="messages-container" id="messages">
+      <!-- Welcome screen shown when no session is active -->
+      <div class="messages-empty" id="welcome-screen">
+        <div class="welcome-screen">
+          <div class="welcome-icon">🎤</div>
+          <div class="welcome-title">AI Interview Agent</div>
+          <div class="welcome-sub">
+            An adaptive technical interview personalized to your actual progress through the 31-day AI Engineering curriculum.
+          </div>
+          <div class="welcome-steps">
+            <div class="welcome-step">
+              <span class="step-num">1</span>
+              Choose a candidate from the sidebar
+            </div>
+            <div class="welcome-step">
+              <span class="step-num">2</span>
+              Click <strong style="color:var(--text-primary)">Start Interview</strong>
+            </div>
+            <div class="welcome-step">
+              <span class="step-num">3</span>
+              Answer questions — the agent adapts to your responses
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing indicator (outside message list for sticky positioning) -->
+    <div class="typing-indicator" id="typing-indicator">
+      <div class="typing-avatar">AI</div>
+      <div class="typing-dots">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+      <div class="input-row">
+        <textarea
+          id="message-input"
+          placeholder="Start your interview first…"
+          disabled
+          rows="1"
+        ></textarea>
+        <button id="send-btn" disabled title="Send (Enter)">➤</button>
+      </div>
+      <div class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let sessionId = null;
+let isInterviewActive = false;
+let questionCount = 0;
+let daysCovered = new Set();
+let selectedCandidate = null;
+let allCandidates = [];
+
+// ── DOM refs ───────────────────────────────────────────────────────────────
+const candidateSelect = document.getElementById('candidate-select');
+const candidateCard   = document.getElementById('candidate-card');
+const candName        = document.getElementById('cand-name');
+const candMeta        = document.getElementById('cand-meta');
+const startBtn        = document.getElementById('start-btn');
+const messages        = document.getElementById('messages');
+const welcomeScreen   = document.getElementById('welcome-screen');
+const typingIndicator = document.getElementById('typing-indicator');
+const messageInput    = document.getElementById('message-input');
+const sendBtn         = document.getElementById('send-btn');
+const statusDot       = document.getElementById('status-dot');
+const statusText      = document.getElementById('status-text');
+const statQuestions   = document.getElementById('stat-questions');
+const statDays        = document.getElementById('stat-days');
+const barQuestions    = document.getElementById('bar-questions');
+const barDays         = document.getElementById('bar-days');
+const daysTags        = document.getElementById('days-tags');
+const toast           = document.getElementById('toast');
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+function generateSessionId() {
+  return 'sess-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now().toString(36);
+}
+
+function setStatus(text, active = false) {
+  statusText.textContent = text;
+  statusDot.className = 'status-dot' + (active ? '' : ' idle');
+}
+
+function showToast(msg, isError = false) {
+  toast.textContent = msg;
+  toast.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => { toast.className = 'toast'; }, 3500);
+}
+
+function scrollToBottom() {
+  messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+}
+
+function formatTime() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function updateProgress(q, days) {
+  questionCount = q;
+  statQuestions.textContent = `${q} / 8+`;
+  statDays.textContent = `${days.length} / 4+`;
+  barQuestions.style.width = Math.min(100, (q / 8) * 100) + '%';
+  barDays.style.width = Math.min(100, (days.length / 4) * 100) + '%';
+
+  daysTags.innerHTML = '';
+  for (const d of days) {
+    const tag = document.createElement('span');
+    tag.className = 'day-tag';
+    tag.textContent = `Day ${d}`;
+    daysTags.appendChild(tag);
+  }
+}
+
+// ── Message Rendering ──────────────────────────────────────────────────────
+
+function addMessage(role, content, dayRef = null) {
+  // Remove welcome screen on first message
+  if (welcomeScreen.parentNode) {
+    welcomeScreen.remove();
+  }
+
+  const wrap = document.createElement('div');
+  wrap.className = `message ${role}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = 'message-avatar';
+  avatar.textContent = role === 'assistant' ? 'AI' : (selectedCandidate?.name?.[0] || 'U');
+
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  bubble.textContent = content;
+
+  const meta = document.createElement('div');
+  meta.className = 'message-meta';
+  meta.textContent = formatTime() + (dayRef ? ` · Day ${dayRef}` : '');
+
+  const inner = document.createElement('div');
+  inner.appendChild(bubble);
+  inner.appendChild(meta);
+
+  wrap.appendChild(avatar);
+  wrap.appendChild(inner);
+
+  messages.appendChild(wrap);
+  scrollToBottom();
+  return wrap;
+}
+
+function addFeedbackCard(feedback) {
+  if (welcomeScreen.parentNode) welcomeScreen.remove();
+
+  const wrap = document.createElement('div');
+  wrap.className = 'message assistant';
+
+  const avatar = document.createElement('div');
+  avatar.className = 'message-avatar';
+  avatar.textContent = 'AI';
+
+  const card = document.createElement('div');
+  card.className = 'feedback-card';
+  card.innerHTML = `
+    <div class="feedback-header">
+      <div class="feedback-title">Interview Complete</div>
+      <div class="feedback-badge">✓ Feedback Ready</div>
+    </div>
+
+    <div>
+      <div class="feedback-section-label">Overall Summary</div>
+      <div class="feedback-summary">${feedback.summary || '—'}</div>
+    </div>
+
+    <div>
+      <div class="feedback-section-label">💪 Strengths</div>
+      <div class="feedback-list" id="strengths-list"></div>
+    </div>
+
+    <div>
+      <div class="feedback-section-label">🔍 Gaps Identified</div>
+      <div class="feedback-list" id="gaps-list"></div>
+    </div>
+
+    <div>
+      <div class="feedback-section-label">🚀 Recommended Next Steps</div>
+      <div class="feedback-list" id="next-list"></div>
+    </div>
+  `;
+
+  const renderList = (id, items, type) => {
+    const el = card.querySelector(`#${id}`);
+    if (!el) return;
+    (items || []).forEach(item => {
+      el.innerHTML += `<div class="feedback-item ${type}"><span class="dot"></span>${item}</div>`;
+    });
+  };
+
+  renderList('strengths-list', feedback.strengths, 'strength');
+  renderList('gaps-list', feedback.gaps, 'gap');
+  renderList('next-list', feedback.next, 'next');
+
+  wrap.appendChild(avatar);
+  wrap.appendChild(card);
+  messages.appendChild(wrap);
+  scrollToBottom();
+}
+
+function showTyping(visible) {
+  typingIndicator.className = 'typing-indicator' + (visible ? ' visible' : '');
+  if (visible) scrollToBottom();
+}
+
+// ── API Calls ──────────────────────────────────────────────────────────────
+
+async function apiCall(payload) {
+  const res = await fetch('/api/interview', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+
+// ── Load Candidates ────────────────────────────────────────────────────────
+
+async function loadCandidates() {
+  try {
+    const res = await fetch('/api/candidates');
+    allCandidates = await res.json();
+
+    candidateSelect.innerHTML = '<option value="">— Select a candidate —</option>';
+    for (const c of allCandidates) {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = `${c.name} · ${c.role}`;
+      candidateSelect.appendChild(opt);
+    }
+  } catch (err) {
+    candidateSelect.innerHTML = '<option value="">Failed to load candidates</option>';
+    showToast('Could not load candidates list', true);
+  }
+}
+
+// ── Event: Candidate selection ─────────────────────────────────────────────
+
+candidateSelect.addEventListener('change', () => {
+  const id = candidateSelect.value;
+  if (!id) {
+    candidateCard.classList.remove('visible');
+    startBtn.disabled = true;
+    selectedCandidate = null;
+    return;
+  }
+
+  selectedCandidate = allCandidates.find(c => c.id === id);
+  if (selectedCandidate) {
+    candName.textContent = selectedCandidate.name;
+    candMeta.innerHTML = `
+      ${selectedCandidate.role}<br>
+      ${selectedCandidate.experience} yrs experience<br>
+      Missions completed: ${selectedCandidate.missionsCompleted}
+    `;
+    candidateCard.classList.add('visible');
+    startBtn.disabled = isInterviewActive;
+  }
+});
+
+// ── Event: Start Interview ────────────────────────────────────────────────
+
+startBtn.addEventListener('click', async () => {
+  const candidateId = candidateSelect.value;
+  if (!candidateId) return;
+
+  sessionId = generateSessionId();
+  isInterviewActive = true;
+  startBtn.disabled = true;
+  candidateSelect.disabled = true;
+
+  setStatus('Interview starting…', true);
+  showTyping(true);
+
+  try {
+    const data = await apiCall({
+      sessionId,
+      candidate: { id: candidateId },
+    });
+
+    showTyping(false);
+    addMessage('assistant', data.reply);
+    updateProgress(1, []);
+    setStatus('Interview in progress', true);
+
+    messageInput.disabled = false;
+    sendBtn.disabled = false;
+    messageInput.placeholder = 'Type your answer…';
+    messageInput.focus();
+
+  } catch (err) {
+    showTyping(false);
+    isInterviewActive = false;
+    startBtn.disabled = false;
+    candidateSelect.disabled = false;
+    setStatus('Error — try again', false);
+    showToast(`Failed to start: ${err.message}`, true);
+  }
+});
+
+// ── Event: Send Message ───────────────────────────────────────────────────
+
+async function sendMessage() {
+  const text = messageInput.value.trim();
+  if (!text || !isInterviewActive) return;
+
+  messageInput.value = '';
+  messageInput.style.height = 'auto';
+  messageInput.disabled = true;
+  sendBtn.disabled = true;
+
+  addMessage('user', text);
+  showTyping(true);
+
+  try {
+    const data = await apiCall({ sessionId, message: text });
+
+    showTyping(false);
+
+    if (data.done) {
+      // Interview complete
+      if (data.reply) addMessage('assistant', data.reply);
+      if (data.feedback) addFeedbackCard(data.feedback);
+
+      isInterviewActive = false;
+      setStatus('Interview complete ✓', false);
+      messageInput.placeholder = 'Interview has ended.';
+      startBtn.disabled = false;
+      candidateSelect.disabled = false;
+      startBtn.textContent = 'Start New Interview';
+
+      // Final stats
+      updateProgress(questionCount + 1, Array.from(daysCovered));
+      showToast('Interview complete! See feedback below.');
+    } else {
+      // Continue
+      addMessage('assistant', data.reply);
+      questionCount++;
+      updateProgress(questionCount, Array.from(daysCovered));
+      messageInput.disabled = false;
+      sendBtn.disabled = false;
+      messageInput.focus();
+    }
+  } catch (err) {
+    showTyping(false);
+    addMessage('assistant', '⚠️ There was an error processing your response. Please try again.');
+    messageInput.disabled = false;
+    sendBtn.disabled = false;
+    showToast(`Error: ${err.message}`, true);
+  }
+}
+
+sendBtn.addEventListener('click', sendMessage);
+
+messageInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// Auto-resize textarea
+messageInput.addEventListener('input', () => {
+  messageInput.style.height = 'auto';
+  messageInput.style.height = Math.min(messageInput.scrollHeight, 140) + 'px';
+});
+
+// ── Init ───────────────────────────────────────────────────────────────────
+loadCandidates();
+</script>
+</body>
+</html>
