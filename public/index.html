@@ -887,6 +887,10 @@
       background: rgba(96, 165, 250, 0.15);
       border-radius: 8px;
       margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #60a5fa;
     }
 
     .feature-title {
@@ -908,21 +912,25 @@
       z-index: 1;
     }
 
-    .workflow-rows {
+    .workflow-container {
       margin-top: 40px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 0 32px;
     }
 
     .workflow-row {
       display: flex;
       align-items: center;
       padding: 28px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
       cursor: default;
       transition: background 0.2s ease;
     }
 
     .workflow-row:last-child {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      border-bottom: none;
     }
 
     .workflow-num {
@@ -2256,11 +2264,13 @@
     }
 
     /* Light mode Section 2: Workflow */
-    [data-theme="light"] .workflow-row {
-      border-top-color: rgba(30, 64, 175, 0.12);
+    [data-theme="light"] .workflow-container {
+      background: rgba(255, 255, 255, 0.70);
+      border: 1px solid rgba(30, 64, 175, 0.12);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     }
 
-    [data-theme="light"] .workflow-row:last-child {
+    [data-theme="light"] .workflow-row {
       border-bottom-color: rgba(30, 64, 175, 0.12);
     }
 
@@ -2509,32 +2519,44 @@
           </div>
           <div class="features-grid">
             <div class="feature-card anim" style="transition-delay: 0.08s">
-              <div class="feature-icon"></div>
+              <div class="feature-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
               <h3 class="feature-title">Candidate-Aware</h3>
               <p class="feature-desc">Questions personalized to each candidate's actual cohort progress</p>
             </div>
             <div class="feature-card anim" style="transition-delay: 0.16s">
-              <div class="feature-icon"></div>
+              <div class="feature-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
               <h3 class="feature-title">Adaptive Follow-ups</h3>
               <p class="feature-desc">Probes specific claims the candidate made, not generic topics</p>
             </div>
             <div class="feature-card anim" style="transition-delay: 0.24s">
-              <div class="feature-icon"></div>
+              <div class="feature-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </div>
               <h3 class="feature-title">8-Question Structure</h3>
               <p class="feature-desc">Covers minimum 4 curriculum areas in every session</p>
             </div>
             <div class="feature-card anim" style="transition-delay: 0.32s">
-              <div class="feature-icon"></div>
+              <div class="feature-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
               <h3 class="feature-title">Real Feedback</h3>
               <p class="feature-desc">Structured strengths, gaps, and next steps after every interview</p>
             </div>
             <div class="feature-card anim" style="transition-delay: 0.40s">
-              <div class="feature-icon"></div>
+              <div class="feature-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              </div>
               <h3 class="feature-title">Skill Radar</h3>
               <p class="feature-desc">Visual breakdown across technical, system, communication, and problem-solving</p>
             </div>
             <div class="feature-card anim" style="transition-delay: 0.48s">
-              <div class="feature-icon"></div>
+              <div class="feature-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
               <h3 class="feature-title">Export Ready</h3>
               <p class="feature-desc">Download the full evaluation as PDF with charts and analysis</p>
             </div>
@@ -2549,7 +2571,7 @@
             <div class="landing-section-label">WORKFLOW</div>
             <h2 class="landing-section-heading">How It Works</h2>
           </div>
-          <div class="workflow-rows">
+          <div class="workflow-container">
             <div class="workflow-row anim" style="transition-delay: 0.08s">
               <span class="workflow-num">(01)</span>
               <span class="workflow-title">Select a Candidate Profile</span>
