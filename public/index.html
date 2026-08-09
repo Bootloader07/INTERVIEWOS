@@ -184,21 +184,36 @@
 
     /* Screen Views */
     .screen-container {
+      position: relative;
       flex: 1;
-      display: flex;
-      flex-direction: column;
+      width: 100%;
+      height: calc(100vh - 60px);
+      overflow: hidden;
     }
 
     .screen {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow-y: auto;
       display: none;
-      flex: 1;
-      width: 100%;
-      animation: fadeIn 0.25s ease-out forwards;
+      box-sizing: border-box;
+      padding-top: 60px;
     }
 
     .screen.active {
+      display: block;
+    }
+
+    #screen-landing.active {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+    }
+
+    #screen-interview.active {
+      display: grid;
     }
 
     @keyframes fadeIn {
@@ -597,10 +612,65 @@
 
     /* ── SCREEN 2: LOBBY ───────────────────────────────────────────────────── */
     #screen-lobby {
-      padding: 24px 32px;
+      background-color: #080810;
+      padding: 84px 32px 32px 32px;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    #screen-lobby::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .lobby-blob {
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, #2563eb 0%, #4f46e5 50%, transparent 70%);
+      filter: blur(80px);
+      opacity: 0.25;
+      animation: blobDrift 10s ease-in-out infinite alternate;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes blobDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-60px, 60px) scale(1.1); }
+    }
+
+    [data-theme="light"] #screen-lobby { background-color: #f4f6fb; }
+    [data-theme="light"] #screen-lobby::before {
+      background-image:
+        linear-gradient(rgba(30,64,175,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,64,175,0.08) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    [data-theme="light"] .lobby-blob {
+      background: radial-gradient(circle, #bfdbfe 0%, #c7d2fe 50%, transparent 70%);
+      opacity: 0.4;
+    }
+
+    .lobby-header,
+    .lobby-grid {
+      position: relative;
+      z-index: 1;
       max-width: 1360px;
       margin: 0 auto;
-      width: 100%;
     }
 
     .lobby-header {
@@ -608,14 +678,17 @@
     }
 
     .lobby-header h2 {
-      font-family: var(--font-mono);
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--accent-primary);
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.5px;
       display: flex;
-      align-items: center;
-      gap: 8px;
+      align-items: baseline;
+      gap: 10px;
+      margin: 0;
     }
+
+    [data-theme="light"] .lobby-title-main { color: #0f172a !important; }
 
     .lobby-grid {
       display: grid;
@@ -631,11 +704,12 @@
     }
 
     .candidate-section-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      color: #94a3b8;
+      font-weight: 700;
+      font-family: var(--font-mono);
       margin-bottom: 14px;
     }
 
@@ -643,7 +717,7 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      max-height: calc(100vh - 200px);
+      max-height: calc(100vh - 220px);
       overflow-y: auto;
       padding-right: 6px;
     }
@@ -676,15 +750,18 @@
     }
 
     .candidate-card-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-main);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #f1f5f9;
     }
 
+    [data-theme="light"] .candidate-card-name { color: #0f172a; }
+
     .candidate-card-sub {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 2px;
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: #94a3b8;
+      margin-top: 3px;
     }
 
     .candidate-stats-row {
@@ -699,19 +776,22 @@
     }
 
     .candidate-stat-label {
-      font-size: 10px;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #64748b;
       font-weight: 700;
       font-family: var(--font-mono);
-      color: var(--text-dim);
-      letter-spacing: 0.8px;
     }
 
     .candidate-stat-val {
-      font-size: 15px;
+      font-size: 1.3rem;
       font-weight: 700;
+      color: #ffffff;
       font-family: var(--font-mono);
-      color: var(--text-main);
     }
+
+    [data-theme="light"] .candidate-stat-val { color: #0f172a; }
 
     .mission-dots-row {
       display: flex;
@@ -755,13 +835,19 @@
     }
 
     .persona-info h3 {
-      font-size: 17px;
+      font-size: 1.3rem;
       font-weight: 700;
+      color: #ffffff;
     }
 
+    [data-theme="light"] .persona-info h3 { color: #0f172a; }
+
     .persona-info p {
-      font-size: 13px;
-      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-style: italic;
+      font-weight: 400;
+      color: #94a3b8;
+      margin-top: 2px;
     }
 
     .config-details-list {
@@ -774,21 +860,28 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
     }
 
     .config-detail-label {
-      color: var(--text-muted);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      font-weight: 700;
+      font-family: var(--font-mono);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .config-detail-value {
-      font-family: var(--font-mono);
+      font-size: 0.95rem;
       font-weight: 600;
-      color: var(--text-main);
+      color: #ffffff;
+      font-family: var(--font-mono);
     }
+
+    [data-theme="light"] .config-detail-value { color: #0f172a; }
 
     .focus-tags-section {
       display: flex;
@@ -797,11 +890,12 @@
     }
 
     .focus-tags-title {
-      font-size: 11px;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #94a3b8;
       font-weight: 700;
       font-family: var(--font-mono);
-      color: var(--text-muted);
-      letter-spacing: 0.8px;
     }
 
     .focus-tags-wrap {
@@ -811,12 +905,18 @@
     }
 
     .focus-tag {
-      padding: 4px 10px;
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-full);
-      font-size: 12px;
-      color: var(--text-main);
+      padding: 6px 14px;
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      border-radius: 20px;
+      background: rgba(96, 165, 250, 0.08);
+      color: #93c5fd;
+      font-size: 0.8rem;
+    }
+
+    #lobby-begin-btn {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
     }
 
     /* ── SCREEN 3: LIVE INTERVIEW ─────────────────────────────────────────── */
@@ -1689,10 +1789,12 @@
 
     <!-- ── SCREEN 2: LOBBY ─────────────────────────────────────────────────── -->
     <section id="screen-lobby" class="screen">
+      <div class="lobby-blob"></div>
+
       <div class="lobby-header">
         <h2>
-          <span>InterviewOS</span>
-          <span style="color: var(--text-muted); font-weight: 400;">// Lobby</span>
+          <span style="color: #60a5fa;">InterviewOS //</span>
+          <span class="lobby-title-main" style="color: #ffffff;">Lobby</span>
         </h2>
       </div>
 
@@ -2038,10 +2140,18 @@
     function navigateTo(screenName) {
       state.currentScreen = screenName;
       Object.keys(screens).forEach(key => {
+        const targetScreen = screens[key];
         if (key === screenName) {
-          screens[key].classList.add('active');
+          targetScreen.scrollTop = 0;
+          targetScreen.style.opacity = '0';
+          targetScreen.style.display = (key === 'interview' ? 'grid' : (key === 'landing' ? 'flex' : 'block'));
+          setTimeout(() => { targetScreen.style.opacity = '1'; }, 10);
+          targetScreen.style.transition = 'opacity 0.2s ease';
+          targetScreen.classList.add('active');
         } else {
-          screens[key].classList.remove('active');
+          targetScreen.style.display = 'none';
+          targetScreen.style.opacity = '0';
+          targetScreen.classList.remove('active');
         }
       });
       window.scrollTo(0, 0);
@@ -2542,7 +2652,7 @@
     }
 
     document.getElementById('eval-new-session-btn').addEventListener('click', () => {
-      navigateTo('lobby');
+      navigateTo('landing');
     });
 
     // ── Landing background is pure CSS — blob + grid texture, no canvas ──
