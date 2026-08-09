@@ -450,6 +450,12 @@ The system combines deterministic planning with LLM-driven conversation so that 
 
 ---
 
+## 🙏 Credits
+
+- Loading screen adapted from [Black Sheep Loader](https://uiverse.io/Admin12121/black-sheep-17) by [Admin12121](https://uiverse.io/Admin12121).
+
+---
+
 ## 👨‍💻 Project
 
 **INTERVIEWOS** — an adaptive AI technical interview platform built to make interview preparation more realistic, personalized, and actionable.
