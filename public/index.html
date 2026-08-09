@@ -9,7 +9,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/loading.css" />
 
   <style>
@@ -840,9 +840,15 @@
     }
 
     .landing-section-heading {
+      font-family: 'Syne', sans-serif;
       font-size: 1.8rem;
-      font-weight: 700;
-      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-wrap: balance;
+      background: linear-gradient(135deg, #ffffff 0%, #60a5fa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-top: 8px;
     }
 
@@ -894,15 +900,20 @@
     }
 
     .feature-title {
+      font-family: 'DM Sans', sans-serif;
       font-size: 1rem;
-      font-weight: 600;
-      color: #ffffff;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: -0.02em;
       margin-bottom: 8px;
     }
 
     .feature-desc {
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.85rem;
-      color: #64748b;
+      font-weight: 400;
+      letter-spacing: 0;
+      color: #94a3b8;
       line-height: 1.6;
     }
 
@@ -935,16 +946,18 @@
 
     .workflow-num {
       font-size: 0.75rem;
-      color: #475569;
+      color: #60a5fa;
       font-family: monospace;
       width: 80px;
       flex-shrink: 0;
     }
 
     .workflow-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #ffffff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: calc(1.2rem + 2px);
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: -0.02em;
       flex: 1;
       transition: color 0.2s ease;
     }
@@ -984,14 +997,23 @@
     }
 
     .about-heading {
+      font-family: 'Syne', sans-serif;
       font-size: 1.6rem;
-      font-weight: 700;
-      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-wrap: balance;
+      background: linear-gradient(135deg, #ffffff 0%, #60a5fa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin: 8px 0 16px;
     }
 
     .about-body {
-      color: #94a3b8;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      color: #cbd5e1;
       font-size: 1rem;
       line-height: 1.7;
     }
@@ -1103,21 +1125,27 @@
     }
 
     .testimonial-quote {
-      color: #ffffff;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-style: italic;
+      color: #e2e8f0;
       font-size: 1rem;
       line-height: 1.6;
       margin-bottom: 24px;
-      font-style: italic;
     }
 
     .testimonial-name {
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.9rem;
-      font-weight: 600;
-      color: #ffffff;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: -0.02em;
     }
 
     .testimonial-role {
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.78rem;
+      font-weight: 400;
       color: #64748b;
       margin-top: 2px;
     }
@@ -2236,8 +2264,12 @@
       color: #2563eb;
     }
 
-    [data-theme="light"] .landing-section-heading {
-      color: #0f172a;
+    [data-theme="light"] .landing-section-heading,
+    [data-theme="light"] .about-heading {
+      background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     /* Light mode Section 1: Features */
@@ -2253,6 +2285,7 @@
 
     [data-theme="light"] .feature-icon {
       background: rgba(37, 99, 235, 0.12);
+      color: #2563eb;
     }
 
     [data-theme="light"] .feature-title {
@@ -2275,7 +2308,7 @@
     }
 
     [data-theme="light"] .workflow-num {
-      color: #64748b;
+      color: #2563eb;
     }
 
     [data-theme="light"] .workflow-title {
@@ -2296,12 +2329,8 @@
     }
 
     /* Light mode Section 3: About */
-    [data-theme="light"] .about-heading {
-      color: #0f172a;
-    }
-
     [data-theme="light"] .about-body {
-      color: #475569;
+      color: #334155;
     }
 
     [data-theme="light"] .about-stat-num {
@@ -2309,7 +2338,7 @@
     }
 
     [data-theme="light"] .about-stat-label {
-      color: #64748b;
+      color: #94a3b8;
     }
 
     [data-theme="light"] .about-card {
@@ -2350,7 +2379,7 @@
     }
 
     [data-theme="light"] .testimonial-quote {
-      color: #0f172a;
+      color: #1e293b;
     }
 
     [data-theme="light"] .testimonial-name {
@@ -2358,7 +2387,7 @@
     }
 
     [data-theme="light"] .testimonial-role {
-      color: #64748b;
+      color: #94a3b8;
     }
 
     /* Light mode Footer */
