@@ -102,40 +102,22 @@ function getUncoveredDays(session) {
  * Checks the interview completion condition.
  * Server-side enforcement — not left to LLM judgment.
  *
- * Bug 1 fix: the old check required plan exhaustion OR a separate grace
- * window. Because the plan was unbounded (one topic per mission), exhaustion
- * never happened naturally. Now:
- *
- *   - Minimums met (question_count >= 8 AND distinct_days >= 4)
- *     AND we are NOT mid-follow-up (follow_up_count === 0, i.e. we just
- *     finished the first/only question on the current topic) → DONE.
- *     This prevents cutting off a follow-up that's already been asked.
- *
- *   - Hard cap at 10 questions regardless of day coverage.
- *
- *   - Absolute safety cap at 20 questions (loop-break for demos).
- *
  * @param {Object} session
  * @returns {boolean}
  */
 function isInterviewComplete(session) {
-  const HARD_CAP   = 10; // close regardless of days_covered once this is hit
-  const SAFETY_CAP = 20; // absolute loop-break — should never be reached
-  const { question_count, distinct_days_covered, follow_up_count } = session;
+  const HARD_CAP = 8;
+  const { question_count, distinct_days_covered } = session;
 
-  // 1. Absolute safety cap
-  if (question_count >= SAFETY_CAP) return true;
-
-  // 2. Hard cap — minimums not required, interview must end
+  // 1. Hard absolute cap at 8 questions: regardless of days covered or plan state
   if (question_count >= HARD_CAP) return true;
 
-  // 3. Plan exhausted
+  // 2. Plan exhausted
   if (session.plan && session.plan_index >= session.plan.length) return true;
 
-  // 4. Minimums met and not mid-follow-up — close cleanly after the current exchange
+  // 3. Minimums met (question_count >= 8 AND distinct_days >= 4)
   const minimumsMet = question_count >= 8 && distinct_days_covered.length >= 4;
-  const notMidFollowUp = follow_up_count === 0; // 0 means we just opened a fresh topic
-  if (minimumsMet && notMidFollowUp) return true;
+  if (minimumsMet) return true;
 
   return false;
 }

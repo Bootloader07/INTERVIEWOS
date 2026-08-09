@@ -136,7 +136,7 @@ async function handleStart(req, res, sessionId, candidatePayload) {
       done: false,
       question_count: 1,
       question_target: 8,
-      hard_cap: 10,
+      hard_cap: 8,
       days_covered: distinct_days_covered,
       current_topic: currentTopic ? { day: currentTopic.day, title: currentTopic.title } : null,
       plan: plan.map(t => ({ day: t.day, title: t.title })),
@@ -291,7 +291,7 @@ async function handleTurn(req, res, sessionId, message) {
       done: false,
       question_count,
       question_target: 8,
-      hard_cap: 10,
+      hard_cap: 8,
       days_covered: distinct_days_covered,
       current_topic: currentTopic ? { day: currentTopic.day, title: currentTopic.title } : null,
     });
