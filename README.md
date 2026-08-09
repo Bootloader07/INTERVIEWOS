@@ -24,6 +24,24 @@ The interviewer dynamically adapts based on what the candidate says during the i
 * Uses confidence signals to control topic progression
 * Limits follow-ups to prevent the interview from getting stuck on one topic
 
+### 📊 Response Depth Barometer
+
+INTERVIEWOS evaluates the depth and quality of a candidate's response in real time.
+
+The **Response Depth Barometer** provides an immediate visual indication of how deeply the candidate has addressed the current interview question.
+
+It helps candidates understand whether their answer is sufficiently detailed or needs further explanation.
+
+#### How it works
+
+- 🧠 **Analyzes response depth** — Evaluates how thoroughly the candidate addresses the question.
+- 📈 **Real-time depth score** — Displays an approximate response-depth percentage.
+- 🎯 **Visual feedback** — A dynamic progress bar makes the depth of the response immediately understandable.
+- 💡 **Encourages better answers** — Candidates can recognize when their response may need more explanation, reasoning, examples, or technical detail.
+- 🔄 **Works alongside adaptive interviewing** — The depth signal can complement the interviewer's assessment when determining how to continue the conversation.
+
+> **Example:** A response displaying `GOOD DEPTH (43%)` indicates that the candidate has provided a reasonable level of detail while leaving room for deeper explanation.
+
 ### 🎯 Candidate-Specific Personalization
 
 Every interview is built around the candidate's actual curriculum journey.
