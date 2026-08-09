@@ -1732,8 +1732,8 @@
 
     /* Left Sidebar */
     .interview-left-sidebar {
-      background: var(--bg-panel);
-      border-right: 1px solid var(--border-color);
+      background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(13,17,46,0.98) 100%);
+      border-right: 1px solid rgba(99, 102, 241, 0.15);
       padding: 20px 16px;
       display: flex;
       flex-direction: column;
@@ -1752,13 +1752,17 @@
     }
 
     .interviewer-name {
+      font-family: 'Syne', sans-serif !important;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #f1f5f9;
     }
 
     .speaking-status {
       font-size: 12px;
-      color: var(--accent-cyan);
+      color: #818cf8;
+      font-style: italic;
       font-family: var(--font-mono);
       display: flex;
       align-items: center;
@@ -1768,8 +1772,9 @@
     .pulse-dot {
       width: 8px;
       height: 8px;
-      background: var(--accent-cyan);
+      background: var(--accent-green);
       border-radius: 50%;
+      filter: drop-shadow(0 0 4px #22c55e);
       animation: pulseGlow 1.5s infinite;
     }
 
@@ -1806,13 +1811,15 @@
     }
 
     .interview-stats-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(20,27,54,0.95) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.2);
       border-radius: var(--radius-md);
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .stat-row {
@@ -1823,37 +1830,53 @@
     }
 
     .stat-row-label {
-      color: var(--text-muted);
+      color: #6366f1;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
     }
 
     .stat-row-val {
       font-family: var(--font-mono);
       font-weight: 700;
-      color: var(--accent-primary);
+      color: #a5b4fc;
     }
 
     .progress-bar-container {
       height: 6px;
-      background: var(--bg-input);
-      border-radius: var(--radius-full);
+      background: rgba(99, 102, 241, 0.15);
+      border-radius: 9999px;
       overflow: hidden;
     }
 
     .progress-bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-cyan));
+      background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+      border-radius: 9999px;
+      box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
       width: 10%;
       transition: width 0.4s ease;
     }
 
     .timer-display {
-      font-family: var(--font-mono);
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-main);
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 14px;
+      font-weight: 500;
+      color: #f1f5f9;
+      letter-spacing: 0.02em;
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    #adaptive-badge {
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #a5b4fc;
+      font-weight: 600;
+      letter-spacing: 0.06em;
     }
 
     .btn-end-interview {
@@ -1890,14 +1913,43 @@
       flex-wrap: wrap;
     }
 
+    .badge-row .badge-indigo {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+
+    #badge-topic {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #c7d2fe;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+
+    #badge-diff {
+      background: rgba(251, 146, 60, 0.15);
+      border: 1px solid rgba(251, 146, 60, 0.4);
+      color: #fb923c;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+
     .question-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(20,27,54,0.95) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.2);
       border-radius: var(--radius-lg);
       padding: 24px;
+      font-family: 'DM Sans', sans-serif;
       font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
       line-height: 1.7;
-      color: var(--text-main);
+      color: #e2e8f0;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       box-shadow: var(--shadow-sm);
       position: relative;
     }
@@ -1914,21 +1966,29 @@
       justify-content: space-between;
       font-size: 11px;
       font-family: var(--font-mono);
-      color: var(--text-muted);
+      color: #6366f1;
+      letter-spacing: 0.1em;
       font-weight: 600;
+    }
+
+    #barometer-status-text {
+      color: #64748b;
+      letter-spacing: 0.06em;
+      font-weight: 500;
     }
 
     .barometer-track {
       height: 6px;
-      background: var(--bg-input);
-      border-radius: var(--radius-full);
+      background: rgba(99, 102, 241, 0.1);
+      border-radius: 9999px;
       overflow: hidden;
     }
 
     .barometer-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--accent-amber), var(--accent-green));
+      background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+      border-radius: 9999px;
       transition: width 0.2s ease, background 0.2s ease;
     }
 
@@ -1937,23 +1997,26 @@
       display: flex;
       flex-direction: column;
       gap: 0;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(20,27,54,0.95) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.2);
       border-radius: var(--radius-lg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       overflow: hidden;
     }
 
     .tab-header {
       display: flex;
-      background: var(--bg-panel);
-      border-bottom: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.7);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.15);
     }
 
     .tab-btn {
       padding: 12px 20px;
       font-size: 13px;
       font-weight: 600;
-      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      color: #475569;
       background: transparent;
       border: none;
       cursor: pointer;
@@ -1962,9 +2025,9 @@
     }
 
     .tab-btn.active {
-      color: var(--accent-primary);
-      border-bottom-color: var(--accent-primary);
-      background: var(--bg-card);
+      color: #818cf8;
+      border-bottom-color: #818cf8;
+      background: transparent;
     }
 
     .tab-content {
@@ -1979,16 +2042,20 @@
     .response-textarea {
       width: 100%;
       min-height: 140px;
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.15);
       border-radius: var(--radius-md);
-      color: var(--text-main);
-      font-family: var(--font-sans);
+      color: #e2e8f0;
+      font-family: 'DM Sans', sans-serif;
       font-size: 14px;
       padding: 14px;
       resize: vertical;
       outline: none;
-      transition: border-color 0.2s;
+      transition: all 0.2s ease;
+    }
+
+    .response-textarea::placeholder {
+      color: #334155;
     }
 
     .response-textarea.code-mode {
@@ -1998,7 +2065,8 @@
     }
 
     .response-textarea:focus {
-      border-color: var(--accent-primary);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
     }
 
     .input-footer {
@@ -2006,20 +2074,21 @@
       justify-content: space-between;
       align-items: center;
       padding: 12px 16px;
-      border-top: 1px solid var(--border-color);
-      background: var(--bg-panel);
+      border-top: 1px solid rgba(99, 102, 241, 0.15);
+      background: rgba(15, 23, 42, 0.7);
     }
 
     .input-hint-text {
       font-size: 12px;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
+      color: #475569;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.02em;
     }
 
     /* Right Sidebar — Radar & Timeline */
     .interview-right-sidebar {
-      background: var(--bg-panel);
-      border-left: 1px solid var(--border-color);
+      background: linear-gradient(160deg, rgba(15,23,42,0.95) 0%, rgba(13,17,46,0.98) 100%);
+      border-left: 1px solid rgba(99, 102, 241, 0.15);
       padding: 20px 16px;
       display: flex;
       flex-direction: column;
@@ -2029,10 +2098,10 @@
 
     .sidebar-block-title {
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 600;
       font-family: var(--font-mono);
-      color: var(--text-muted);
-      letter-spacing: 0.8px;
+      color: #6366f1;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       margin-bottom: 12px;
     }
@@ -2044,6 +2113,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .radar-chart-wrap svg polygon {
+      filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
     }
 
     /* Timeline */
@@ -2058,11 +2131,13 @@
       align-items: flex-start;
       gap: 10px;
       font-size: 12px;
-      color: var(--text-muted);
+      color: #334155;
+      font-weight: 400;
     }
 
     .timeline-item.completed {
-      color: var(--text-main);
+      color: #a5b4fc;
+      font-weight: 700;
     }
 
     .timeline-icon {
@@ -2079,14 +2154,53 @@
 
     .timeline-item.completed .timeline-icon {
       background: rgba(99, 102, 241, 0.2);
-      color: var(--accent-primary);
-      border: 1px solid var(--accent-primary);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.5);
+      filter: drop-shadow(0 0 3px #6366f1);
     }
 
     .timeline-item.locked .timeline-icon {
-      background: var(--bg-input);
-      color: var(--text-dim);
-      border: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.6);
+      color: #475569;
+      border: 1px solid rgba(71, 85, 105, 0.3);
+    }
+
+    /* Light Mode Overrides for Interview Screen */
+    [data-theme="light"] .interview-left-sidebar,
+    [data-theme="light"] .interview-right-sidebar {
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(241,245,249,0.95) 100%);
+      border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    [data-theme="light"] .interview-stats-card,
+    [data-theme="light"] .question-box,
+    [data-theme="light"] .input-tabs-wrapper {
+      background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(241,245,249,0.95) 100%);
+      border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    [data-theme="light"] .interviewer-name,
+    [data-theme="light"] .timer-display,
+    [data-theme="light"] .question-box {
+      color: #0f172a;
+    }
+
+    [data-theme="light"] .stat-row-label,
+    [data-theme="light"] .barometer-header span:first-child,
+    [data-theme="light"] .sidebar-block-title {
+      color: #4f46e5;
+    }
+
+    [data-theme="light"] .response-textarea {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(99, 102, 241, 0.2);
+      color: #0f172a;
+    }
+
+    [data-theme="light"] .tab-header,
+    [data-theme="light"] .input-footer {
+      background: rgba(241, 245, 249, 0.9);
+      border-color: rgba(99, 102, 241, 0.15);
     }
 
     /* ── SCREEN 4: EVALUATION ─────────────────────────────────────────────── */
