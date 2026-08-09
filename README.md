@@ -1,255 +1,458 @@
-# AI Interview Agent 🎤
+# INTERVIEWOS 🎙️
 
-An adaptive, multi-turn technical interview agent built for the **31-day AI Engineering Cohort**. It conducts personalized, LLM-powered interviews based on a candidate's actual curriculum progress — using the Groq API with `llama-3.3-70b-versatile`.
+### Train Like You're Already Hired.
+
+**INTERVIEWOS** is an adaptive AI-powered technical interview platform that conducts realistic, multi-turn interviews tailored to each candidate's actual learning journey.
+
+Instead of asking the same predefined questions to everyone, INTERVIEWOS analyzes a candidate's curriculum progress, mission history, attempts, and previous answers to dynamically decide what to ask next.
+
+Powered by **Groq + Llama 3.3 70B**, INTERVIEWOS is designed to simulate the reasoning, depth, and follow-up behavior of a real technical interviewer.
 
 ---
 
-## Quick Start
+## ✨ Features
+
+### 🧠 Adaptive AI Interviewing
+
+INTERVIEWOS doesn't follow a fixed questionnaire.
+
+The interviewer dynamically adapts based on what the candidate says during the interview.
+
+* Generates contextual follow-up questions
+* Tracks conversation history
+* Detects answer depth
+* Uses confidence signals to control topic progression
+* Limits follow-ups to prevent the interview from getting stuck on one topic
+
+### 🎯 Candidate-Specific Personalization
+
+Every interview is built around the candidate's actual curriculum journey.
+
+The system considers:
+
+* Completed missions
+* Skipped missions
+* Number of attempts
+* First-try completions
+* Curriculum days covered
+* Candidate role and experience
+
+This allows INTERVIEWOS to ask questions that are relevant to what the candidate has actually worked on.
+
+### 🔍 Claim-Based Follow-Ups
+
+Rather than asking generic questions like:
+
+> "Tell me more about embeddings."
+
+INTERVIEWOS extracts a **specific claim from the candidate's answer** and challenges it.
+
+For example:
+
+**Candidate:**
+"I chose Pinecone because it was easier to scale."
+
+**INTERVIEWOS:**
+"What made Pinecone a better scaling choice for your workload, and how would you validate that decision?"
+
+This creates a much more realistic technical interview experience.
+
+### 📊 Intelligent Evaluation
+
+At the end of the interview, INTERVIEWOS generates a structured evaluation containing:
+
+* **Overall Score**
+* **Technical Knowledge**
+* **System Design**
+* **Communication**
+* **Problem Solving**
+* **Strengths**
+* **Knowledge Gaps**
+* **Recommended Next Steps**
+
+The goal isn't just to give a score — it's to tell the candidate **what to improve next**.
+
+### 📈 Live Interview Analytics
+
+During the interview, candidates can see:
+
+* Question progress
+* Interview timer
+* Current topic
+* Adaptive interview status
+* Skills radar
+* Curriculum journey
+* Covered curriculum days
+
+### 💻 Technical Response Workspace
+
+Candidates can provide:
+
+* Technical explanations
+* Code / implementation approaches
+* A dedicated code scratchpad
+
+Both can be submitted as part of the same interview response.
+
+### 🛡️ Reliable AI Execution
+
+INTERVIEWOS is designed to remain usable even when an LLM request fails.
+
+The backend includes:
+
+* LLM retry logic
+* Scripted fallback questions
+* Safe feedback fallback
+* Invalid-session handling
+* Empty-answer handling
+* Interview turn limits
+
+---
+
+## 🏗️ Architecture
+
+```text
+                    ┌─────────────────────────┐
+                    │       INTERVIEWOS       │
+                    │       Web Interface     │
+                    └────────────┬────────────┘
+                                 │
+                                 │ HTTP
+                                 ▼
+                    ┌─────────────────────────┐
+                    │     Express Server      │
+                    │                         │
+                    │  /api/interview         │
+                    │  /api/candidates        │
+                    │  /api/curriculum        │
+                    └────────────┬────────────┘
+                                 │
+              ┌──────────────────┼──────────────────┐
+              ▼                  ▼                  ▼
+      ┌──────────────┐   ┌──────────────┐   ┌──────────────┐
+      │ Interview    │   │ LLM          │   │ Feedback     │
+      │ Planner      │   │ Orchestrator │   │ Generator    │
+      └──────┬───────┘   └──────┬───────┘   └──────┬───────┘
+             │                  │                  │
+             ▼                  ▼                  ▼
+      Candidate +         Groq / Llama       Structured
+      Curriculum          3.3 70B            Evaluation
+             │
+             └──────────────────┬──────────────────┘
+                                ▼
+                       ┌──────────────────┐
+                       │ Session Store    │
+                       │ In-Memory State   │
+                       └──────────────────┘
+```
+
+---
+
+## 🔄 Interview Flow
+
+```text
+Candidate Selection
+        │
+        ▼
+Build Personalized Interview Plan
+        │
+        ▼
+Generate Opening Question
+        │
+        ▼
+Candidate Answers
+        │
+        ▼
+Analyze Response
+        │
+        ├── Strong Answer ──────► Move Deeper / New Topic
+        │
+        ├── Partial Answer ─────► Targeted Follow-up
+        │
+        └── Weak Answer ────────► Clarify / Probe
+        │
+        ▼
+Cover Required Curriculum Areas
+        │
+        ▼
+Interview Complete
+        │
+        ▼
+AI Evaluation
+        │
+        ▼
+Scores + Strengths + Gaps + Next Steps
+```
+
+---
+
+## 📚 Curriculum Coverage
+
+Interview coverage is enforced by the backend rather than relying entirely on the LLM.
+
+The planner prioritizes:
+
+1. Skipped missions
+2. Missions requiring multiple attempts
+3. First-try / low-attempt missions
+4. Additional mission history when more coverage is needed
+
+The interview tracks:
+
+* Number of questions
+* Distinct curriculum days covered
+* Current topic
+* Interview plan
+* Maximum interview length
+
+This keeps the interview structured while still allowing the conversation to feel natural.
+
+---
+
+## 🧩 Project Structure
+
+```text
+INTERVIEWOS/
+│
+├── src/
+│   ├── server.js
+│   │
+│   ├── routes/
+│   │   └── interview.js
+│   │
+│   ├── planner/
+│   │   └── interviewPlanner.js
+│   │
+│   ├── orchestrator/
+│   │   └── llmOrchestrator.js
+│   │
+│   ├── feedback/
+│   │   └── feedbackGenerator.js
+│   │
+│   ├── prompts/
+│   │   └── prompts.js
+│   │
+│   └── store/
+│       └── sessionStore.js
+│
+├── data/
+│   ├── curriculum.json
+│   └── candidates.json
+│
+├── public/
+│   ├── index.html
+│   └── loading.css
+│
+├── architecture.md
+├── technical-spec.md
+├── project_context.md
+├── coding_rules.md
+├── package.json
+└── README.md
+```
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer         | Technology                    |
+| ------------- | ----------------------------- |
+| Runtime       | Node.js                       |
+| Backend       | Express.js                    |
+| LLM           | Groq API                      |
+| Model         | Llama 3.3 70B Versatile       |
+| Frontend      | HTML, CSS, Vanilla JavaScript |
+| Session State | In-memory JavaScript store    |
+| API           | REST                          |
+| Configuration | dotenv                        |
+| CORS          | Express CORS                  |
+
+The project currently uses Express, Groq SDK, dotenv, CORS and UUID dependencies.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
 
 ```bash
-# 1. Install dependencies
+git clone <your-repository-url>
+cd INTERVIEWOS
+```
+
+### 2. Install dependencies
+
+```bash
 npm install
+```
 
-# 2. Set your Groq API key in .env
-echo "GROQ_API_KEY=your_key_here" > .env
+### 3. Configure environment variables
 
-# 3. Start the server
+Create a `.env` file:
+
+```env
+GROQ_API_KEY=your_groq_api_key
+PORT=3000
+```
+
+> Never commit your `.env` file or expose your API key publicly.
+
+### 4. Start the application
+
+```bash
 npm start
+```
 
-# 4. Open the chat UI
-open http://localhost:3000
+For development:
+
+```bash
+npm run dev
+```
+
+### 5. Open INTERVIEWOS
+
+```text
+http://localhost:3000
 ```
 
 ---
 
-## Project Structure
+## 🔌 API
 
-```
-Interview-Agent/
-├── src/
-│   ├── server.js                  # Express entry point
-│   ├── routes/interview.js        # POST /api/interview — all phases
-│   ├── store/sessionStore.js      # In-memory session store
-│   ├── planner/interviewPlanner.js# Pure fn: candidate → topic queue
-│   ├── orchestrator/llmOrchestrator.js  # Groq API + confidence parsing
-│   ├── feedback/feedbackGenerator.js    # End-of-interview feedback
-│   └── prompts/prompts.js         # All prompt templates (single source)
-├── data/
-│   ├── curriculum.json            # 31-day curriculum (8 modules)
-│   └── candidates.json            # 20 candidate profiles
-├── public/
-│   └── index.html                 # Chat UI (plain HTML + JS)
-├── .env                           # GROQ_API_KEY (never committed)
-└── package.json
-```
-
----
-
-## API Endpoint
-
-**Single endpoint, three phases** — all via `POST /api/interview`.
-
-### Phase 1 — Start Interview
+### Start an Interview
 
 ```http
 POST /api/interview
-Content-Type: application/json
-
-{
-  "sessionId": "abc-123",
-  "candidate": { "id": "CAND-003" }
-}
 ```
 
-The `candidate` field can be:
-- `{ "id": "CAND-001" }` — looks up by ID from `candidates.json`
-- The full candidate object (as per `candidates.json` schema)
-
-**Response:**
 ```json
 {
-  "reply": "Welcome, Emily. Let's start with embeddings — can you walk me through how you used Sentence Transformers to generate embeddings for your knowledge base on Day 7?",
-  "done": false
+  "sessionId": "abc-123",
+  "candidate": {
+    "id": "CAND-003"
+  }
 }
 ```
 
----
-
-### Phase 2 — Conversation Turn
+### Submit an Answer
 
 ```http
 POST /api/interview
-Content-Type: application/json
-
-{
-  "sessionId": "abc-123",
-  "message": "I used Sentence Transformers to embed each chunk of text..."
-}
 ```
 
-**Response:**
 ```json
 {
-  "reply": "Interesting. You mentioned comparing embedding models — what made you choose OpenAI Embeddings over Sentence Transformers for production?",
-  "done": false
+  "sessionId": "abc-123",
+  "message": "My answer to the interview question..."
 }
 ```
+
+### End Interview Early
+
+```http
+POST /api/interview
+```
+
+```json
+{
+  "sessionId": "abc-123",
+  "message": "__END_INTERVIEW__"
+}
+```
+
+### Helper Endpoints
+
+| Method | Endpoint          | Purpose                     |
+| ------ | ----------------- | --------------------------- |
+| GET    | `/health`         | Server health check         |
+| GET    | `/api/candidates` | Retrieve candidate profiles |
+| GET    | `/api/curriculum` | Retrieve curriculum summary |
 
 ---
 
-### Phase 3 — Interview Complete (automatic)
+## 🧾 Evaluation Output
 
-When the completion condition is met, the next turn response automatically includes feedback:
+A completed interview returns structured feedback:
 
 ```json
 {
-  "reply": "Thank you for completing the interview. Here is your feedback.",
-  "done": true,
-  "feedback": {
-    "summary": "Emily demonstrated strong...",
-    "strengths": ["Deep understanding of vector embeddings...", "..."],
-    "gaps": ["Limited discussion of fine-tuning trade-offs", "..."],
-    "next": ["Explore LoRA fine-tuning hands-on", "..."]
+  "summary": "Overall candidate assessment...",
+  "strengths": [
+    "Strong technical reasoning",
+    "Clear communication"
+  ],
+  "gaps": [
+    "Needs deeper system design reasoning"
+  ],
+  "next": [
+    "Practice production-scale architecture"
+  ],
+  "scores": {
+    "technical": 82,
+    "systemDesign": 76,
+    "communication": 88,
+    "problemSolving": 81
   }
 }
 ```
 
 ---
 
-### Helper Endpoints
+## 🔐 Environment Variables
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/health` | Server health check |
-| GET | `/api/candidates` | List all 20 candidates (for UI dropdown) |
-
----
-
-## How Adaptiveness Works (Confidence-Tag Mechanism)
-
-Every LLM response for a question uses a strict two-line output format:
-
-```
-CONFIDENCE: high|medium|low
-[the actual question text]
-```
-
-The server **strips the CONFIDENCE tag** before returning the question to the client. The tag drives topic advancement logic server-side:
-
-| Confidence | Follow-up count | Action |
-|------------|-----------------|--------|
-| `high` | ≥ 1 | Advance to next topic (candidate showed depth) |
-| `medium` | ≥ 2 | Advance after follow-up cap is hit |
-| `low` | ≥ 2 | Advance after follow-up cap is hit |
-| Any | ≥ 2 | **Hard advance** — max 2 follow-ups per topic enforced server-side |
-
-If an answer is fewer than 4 words or 15 characters, the server sends a gentle clarification request without incrementing `question_count` or changing the topic.
+| Variable       | Required | Description                     |
+| -------------- | -------- | ------------------------------- |
+| `GROQ_API_KEY` | Yes      | Groq API authentication key     |
+| `PORT`         | No       | Server port, defaults to `3000` |
 
 ---
 
-## How Coverage is Guaranteed (≥ 8 Questions / ≥ 4 Days)
+## 🛡️ Reliability
 
-Coverage is enforced **server-side by the Interview Planner**, never by trusting the LLM alone.
+INTERVIEWOS includes defensive handling for common runtime failures.
 
-### Step 1 — Deterministic Topic Queue (no LLM)
-
-`interviewPlanner.buildPlan(candidate, curriculum)` produces an ordered queue sorted by priority:
-
-1. **Skipped missions** → probe conceptual awareness despite the skip
-2. **High-attempt passes (≥3 attempts)** → probe *why* it was hard, depth vs trial-and-error  
-3. **First-try / low-attempt passes** → probe deeper reasoning and trade-offs
-4. **Minimum padding** → if fewer than 4 topics exist, supplements from mission history
-
-### Step 2 — Server-Side Progress Tracker
-
-`distinct_days_covered[]` and `question_count` are tracked in session state. They are only incremented in route handler code, not by the LLM.
-
-### Step 3 — Completion Condition
-
-```
-question_count >= 8
-AND distinct_days_covered.length >= 4
-AND (plan_index >= plan.length OR question_count >= 20)
-```
-
-The hard cap of 20 turns prevents infinite loops during demos.
+| Failure                    | Behavior                                   |
+| -------------------------- | ------------------------------------------ |
+| Groq request fails         | Retry + fallback question                  |
+| Invalid feedback JSON      | Retry + safe fallback                      |
+| Empty answer               | Request clarification                      |
+| Unknown session            | Return clean `400` response                |
+| Early termination          | Generate evaluation from available answers |
+| Excessive interview length | Enforce hard limit                         |
 
 ---
 
-## Reliability & Error Handling
+## 🎨 Product Philosophy
 
-| Situation | Handling |
-|-----------|----------|
-| LLM call fails | Retry once → scripted fallback question from plan topic |
-| Feedback JSON malformed | Retry once → safe default structure (never 500s) |
-| Empty/one-word answer | Gentle clarification, doesn't count as a turn |
-| Skipped topic probed | Framed as "did you explore independently?" |
-| Unknown sessionId on TURN | Returns clean 400 — never silently creates session |
-| Hard turn cap (20) reached | Triggers feedback generation automatically |
+INTERVIEWOS is built around one principle:
 
----
+> **A good interview should respond to the candidate — not just read questions to them.**
 
-## Sample Transcript — Emily Chen (CAND-003, AI Engineer)
+The system combines deterministic planning with LLM-driven conversation so that the interview remains both:
 
-```
-🤖 Let's start with embeddings. On Day 7, you used Sentence Transformers to
-   generate embeddings. Can you explain what a vector embedding actually
-   represents, and why similar concepts end up close together in that space?
-
-👤 Embeddings convert text into high-dimensional vectors that capture semantic
-   meaning. Similar words cluster together. I used PCA to visualize how
-   healthcare concepts grouped...
-
-🤖 Great. You mentioned comparing Sentence Transformers with OpenAI Embeddings.
-   What drove the switch to OpenAI for production — was it purely quality,
-   or were there other factors like latency or API reliability?
-
-👤 The OpenAI embeddings had better semantic similarity out of the box, but
-   also the production environment had data that could be sent to an external
-   API. For cost at scale, OpenAI per-token was actually cheaper than running
-   our own GPU...
-
-🤖 Moving to Day 8 — you compared ChromaDB and Pinecone. If you had to
-   deploy this to production with 10M documents, which would you choose
-   and why?
-
-[... continues for 8+ turns across 4+ curriculum days ...]
-
-🤖 Thank you for completing the interview. Here is your feedback.
-   done: true
-
-FEEDBACK:
-  Summary: Emily demonstrated strong depth in core AI engineering skills
-           including embeddings, RAG, and multi-agent systems...
-  Strengths:
-    ✅ Strong conceptual clarity on vector embeddings and retrieval
-    ✅ Thoughtful trade-off analysis between local and hosted solutions
-    ✅ Clear understanding of function calling and structured outputs
-  Gaps:
-    ⚠️  Limited discussion of monitoring and observability patterns
-    ⚠️  Fine-tuning concepts (LoRA/QLoRA) not explored
-  Next Steps:
-    🚀 Practice hands-on LoRA fine-tuning with the PEFT library
-    🚀 Build a simple Prometheus + Grafana monitoring dashboard
-```
+**Structured enough to evaluate.**
+**Flexible enough to feel real.**
 
 ---
 
-## Environment Variables
+## 🚧 Roadmap
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `GROQ_API_KEY` | ✅ Yes | Your Groq API key |
-| `PORT` | No | Server port (default: 3000) |
-
----
-
-## Tech Stack
-
-- **Runtime**: Node.js 18+
-- **Framework**: Express 4
-- **LLM**: Groq API — `llama-3.3-70b-versatile`
-- **Session Store**: In-memory JS object (no database)
-- **Frontend**: Plain HTML + Vanilla CSS + Vanilla JS
+* [ ] Voice interview mode
+* [ ] Speech-to-text responses
+* [ ] Text-to-speech interviewer
+* [ ] Persistent interview history
+* [ ] User authentication
+* [ ] Resume-based interview personalization
+* [ ] Job-description based interviews
+* [ ] Interview history & performance trends
+* [ ] More detailed skill analytics
+* [ ] Multi-interview session comparison
 
 ---
+
+## 👨‍💻 Project
+
+**INTERVIEWOS** — an adaptive AI technical interview platform built to make interview preparation more realistic, personalized, and actionable.
+
+**Train Like You're Already Hired.** 🎙️
+
